@@ -1,39 +1,19 @@
 import express from "express";
-import { mymodel } from "../models/usermodels.js";
+import UserController from "../controller/usercontroller.js";
 let myrouter = express.Router();
+const userController = new UserController();
 
 myrouter.get("/", (req, res) => {
   res.send("you are in home page");
 });
 //for create
-myrouter.post("/add", async (req, res) => {
-  const { name, location } = req.body;
-  const data = await mymodel.create({ name: name, location: location });
-  res.json(data);
-});
+myrouter.post("/add", userController.createUser);
+
 //for read
-myrouter.get("/:id", async (req, res) => {
-  const { id } = req.params;
-  const data = await mymodel.findByPk({ id });
-  res.send(data);
-});
+myrouter.get("/:id", userController.viewUser);
 //for update
-myrouter.post("/update/:id", async (req, res) => {
-  const { name, location } = req.body;
-  const { id } = req.params;
-  const data = await mymodel.update(
-    { name: name, location: location },
-    {
-      where: { id: id },
-    }
-  );
-  res.send(data);
-});
+myrouter.post("/update/:id", userController.updateUser);
 //for deleting
-myrouter.delete("/delete/:id", async (req, res) => {
-  const { id } = req.params;
-  const data = await mymodel.destroy({ where: { id } });
-  res.send(data);
-});
+myrouter.delete("/:id", userController.deleteUser);
 
 export default myrouter;
